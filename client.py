@@ -27,9 +27,9 @@ def start():
     print("[ASISTENTE] Hola! Bienvenido, Ingrese su RUT (con punto y guión.)")
     rut = input("[YO]: ")
     
-    parse_rut = ''.join(char for char in rut if (char.isalnum() or char.upper() == 'K'))
+    parse_rut = ''.join(char for char in rut if (char.isdigit() or char.upper() == 'K'))
     
-    print(parse_rut)
+    # print(parse_rut)
     
     send(parse_rut)
     # Recibimos de vuelta si el rut existe en la base de datos
@@ -43,7 +43,8 @@ def start():
     
     # Si existe recibimos el nombre del server
     else:
-        name = client.recv(2048).decode(FORMAT)
+        pass
+        #name = client.recv(2048).decode(FORMAT)
     
     print(f"[ASISTENTE] Para desconectarse enviar '{DISCONNECT_MESSAGE}'.")
     

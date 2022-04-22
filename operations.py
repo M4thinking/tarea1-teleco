@@ -22,7 +22,15 @@ def server_exit(name, message):
 
 
 # Esta no nos sirve mucho
-def process_input(data):
+def process_input(name):
+    options = f"""  Hola {name.split()[0]}, en qué te podemos ayudar?.\n
+        \t(1) Revisar atenciones anteriores
+        \t(2) Reiniciar servicios
+        \t(3) Contactar a un ejecutivo
+        \t(4) Salir
+        """
+    return options
+'''
     try:
         op = int(data)
         if 0 < op < 4:
@@ -54,3 +62,4 @@ def process_input(data):
             return message
     except:
         return "Ingresa una entrada válida."
+'''
