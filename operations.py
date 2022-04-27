@@ -1,7 +1,7 @@
 import time
-
 from db import *
 from hashlib import *
+from send_read import *
 
 HEADER = 64
 PORT = 6969
@@ -9,15 +9,7 @@ HOST = "127.0.0.1"
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
-
-
-# Lee mensaje usando nuestro estándar de header + mensaje
-def read(conn):
-    msg_len = conn.recv(HEADER).decode(FORMAT)
-    if msg_len:
-        msg_len = int(msg_len)
-        msg = conn.recv(msg_len).decode(FORMAT)
-        return msg
+DB_PATH = "db.json"
 
 
 def start_operations(conn, name, rut, entrada_no_valida = 0):
@@ -44,7 +36,7 @@ def start_operations(conn, name, rut, entrada_no_valida = 0):
     elif respuesta == '4':
         print(server_exit(conn, name, "SERVER"))
         conn.send(server_exit(conn, name, "ASISTENTE").encode(FORMAT))
-        start_operations(conn, name, rut, 1)
+        #start_operations(conn, name, rut, 1)
     else:
         conn.send("Entrada no válida".encode(FORMAT))
         start_operations(conn, name, rut, 1)
@@ -52,7 +44,7 @@ def start_operations(conn, name, rut, entrada_no_valida = 0):
 
 
 def check_attentions(conn, rut):
-    db = abrir_json("temp_db.json")
+    db = abrir_json(DB_PATH)
     db_cliente = db[rut]["atenciones"]
     options = "Usted tiene las siguiente solicitudes en curso:\n\n"
 
@@ -68,11 +60,11 @@ def check_attentions(conn, rut):
 
 
 def reset_service(conn, rut, name):
-    db = abrir_json("temp_db.json")
+    db = abrir_json(DB_PATH)
     requestID = sha256()
     requestID.update(str(time.time()).encode("utf-8"))
     crear_atencion(db, rut, int(requestID.hexdigest()[:10], 16) % (10 ** 8), "Reseteo de Servicios")
-    actualizar_json("temp_db.json", db)
+    actualizar_json(DB_PATH, db)
     return f"Reinicio Servicios Cliente {name}."
 
 

@@ -2,9 +2,8 @@ import socket
 import threading
 from db import *
 from send_read import read
+from operations import DB_PATH
 import operations
-
-db = abrir_json("temp_db.json")
 
 HEADER = 64
 PORT = 6969
@@ -18,6 +17,7 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 # socket( familia = AF_INET para ipv6,  forma de enviar datos =  TCP/IP)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
+db = abrir_json(DB_PATH)
 
 
 # Corre en paralelo para cada cliente
@@ -32,7 +32,7 @@ def handle_client(conn, addr):
         name = read(conn)
 
         crear_cliente(db, rut, name)
-        actualizar_json("temp_db.json", db)
+        actualizar_json(DB_PATH, db)
 
     # Si ya esta en la base de datos sacamos su nombre y lo mandamos al cliente para que lo salude
     else:
