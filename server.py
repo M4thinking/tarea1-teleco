@@ -23,6 +23,7 @@ server.bind(ADDR)
 # Corre en paralelo para cada cliente
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
+    conection = read(conn)
     rut = read(conn)     # Recibimos el rut
 
     # Si no esta en la base de datos le pedimos el nombre
@@ -63,7 +64,7 @@ def start():
         # Creamos thread para la nueva conexion que corre la fn handle_client con los argumentos args
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+        print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
 
 
 print("[STARTING] server is starting...")

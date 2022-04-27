@@ -37,7 +37,7 @@ def start():
         server_msg = client.recv(2048).decode(FORMAT)
 
         if server_msg[0] != ':':
-            print(f"[ASISTENTE] {server_msg}")
+            print(f"{server_msg}")
             client_msg = input("[YO]: ")
             send(client, client_msg)
 

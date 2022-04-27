@@ -20,7 +20,7 @@ def actualizar_json(nombreArchivo, data):
     global mutex  # Traemos el objeto mutex
     mutex.acquire()  # Pedimos permiso para que solo el hilo actual pueda realizar el proceso
     f = open(nombreArchivo, "w")  # Abrimos el archivo
-    json.dump(data, f)  # Reescribimos el .json
+    json.dump(data, f, indent=4)  # Reescribimos el .json
     f.close()  # Cerramos el archvo
     mutex.release()  # Soltamos el mutex de este hilo
     return True  # Retornamos un booleano que verifica que se completo el proceso
