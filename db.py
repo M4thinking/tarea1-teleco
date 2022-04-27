@@ -15,6 +15,7 @@ Atencion_defecto = {
 def abrir_json(nombreArchivo):
     f = open(nombreArchivo)
     data = json.dumps(f)
+    f.close()
     return data
 
 
