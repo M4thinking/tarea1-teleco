@@ -1,6 +1,10 @@
 {
-  "rut": {
-    "nombre": "nombre",
-    "disponible": 0 o 1
-  }
+    "206364165": {
+        "nombre": "Sebastian Guzman",
+        "disponible": 0
+    },
+    "207246069": {
+        "nombre": "Diego Sanz",
+        "disponible": 0
+    }
 }

@@ -1,15 +1,15 @@
 import socket
 import threading
 from db import *
-from send_read import read
-from operations import DB_PATH
+from send_read import send, read
+from operations import DB_PATH, EJECUTIVOS_PATH, cola_ejecutivos, msg_buffer
 import operations
 
 HEADER = 64
 PORT = 6969
-HOST = "127.0.0.1"
+#HOST = "127.0.0.1"
 # Consigue la ipv4 de la maquina donde se corre
-# HOST = socket.gethostbyname(socket.gethostname())
+HOST = socket.gethostbyname(socket.gethostname())
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -18,12 +18,12 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 db = abrir_json(DB_PATH)
+db_ejecutivos = abrir_json(EJECUTIVOS_PATH)
 
 
 # Corre en paralelo para cada cliente
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
-    conection = read(conn)
     rut = read(conn)     # Recibimos el rut
 
     # Si no esta en la base de datos le pedimos el nombre
@@ -48,12 +48,36 @@ def handle_client(conn, addr):
     conn.close()
 
 
-def handle_ejecutivo(conn, adr):
-    return
+def handle_ejecutivo(conn, addr):
+    print(f"[NEW CONNECTION] Ejecutivo desde {addr} connected.")
+    rut = read(conn)  # Recibimos el rut
+
+    # Si no esta en nuestra base de datos terminamos proceso
+    if rut not in db_ejecutivos:
+        print(f"[SERVER] {rut} no es ejecutivo.")
+        conn.send("0".encode(FORMAT))
+        conn.close()
+        return
+
+    conn.send("1".encode(FORMAT))
+
+    # Si esta en la base de datos sacamos su nombre, lo dejamos disponible y lo dejamos escuchando
+    name = db_ejecutivos[rut]["nombre"]
+    print(f"[SERVER] Ejecutivo {name} conectado.")
+
+    db_ejecutivos[rut]["disponible"] = 1
+    actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
+
+    operations.start_ejecutivo(conn, name, rut)
+
+    print(f"[SERVER] Ejecutivo {name} desconectado.")
+    db_ejecutivos[rut]["disponible"] = 0
+    actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
+    conn.close()
 
 
 # Comienza el servidor, esperando conexiones y pasandoselas a handle_client en un cliente nuevo
-def start():
+def start_server():
     print(f"[LISTENING] Server is listening on {HOST}")
     server.listen()  # escuchamos a una nueva conexion
     while True:
@@ -62,10 +86,19 @@ def start():
         # conn -> objeto que permite enviar info
 
         # Creamos thread para la nueva conexion que corre la fn handle_client con los argumentos args
-        thread = threading.Thread(target=handle_client, args=(conn, addr))
-        thread.start()
+        connection = read(conn)
+        if connection == "cliente":
+            thread = threading.Thread(target=handle_client, args=(conn, addr))
+            thread.start()
+
+        elif connection == "ejecutivo":
+            thread = threading.Thread(target=handle_ejecutivo, args=(conn, addr))
+            thread.start()
+
+        else:
+            print("QUE ESTA PASANDO O.o")
         print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
 
 
 print("[STARTING] server is starting...")
-start()
+start_server()

@@ -3,7 +3,7 @@ from send_read import send, read
 
 HEADER = 64
 PORT = 6969
-HOST = "127.0.0.1"
+HOST = "192.168.56.1"
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -22,14 +22,12 @@ def start():
 
     send(ejecutivo, parse_rut)
     # Recibimos de vuelta si el rut existe en la base de datos
-    has_name = ejecutivo.recv(2048).decode(FORMAT)
+    is_ejecutivo = ejecutivo.recv(2048).decode(FORMAT)
 
-    # Si no existe le pedimos el nombre y lo mandamos de vuelta
-    # Si existe no necesitamos pedir el nombre para nada
-    if has_name == '0':
-        print("[ASISTENTE] Parece que eres nuevo por aca! Ingrese su nombre")
-        name = input("[YO]: ")
-        send(ejecutivo, name)
+    # Si no existe en el registro de ejecutivos terminamos el programa
+    if is_ejecutivo == '0':
+        print("[ASISTENTE] No estás registrado como ejecutivo!")
+        return
 
     # Entramos a un loop infinito que recibe mensaje del servidor, lo mostramos en pantalla y le pedimos una
     # respuesta al cliente, enviandola al servidor
@@ -37,7 +35,7 @@ def start():
         server_msg = read(ejecutivo)
 
         if server_msg[0] != ':':
-            print(f"[ASISTENTE] {server_msg}")
+            print(f"{server_msg}")
             client_msg = input("[YO]: ")
             send(ejecutivo, client_msg)
 
@@ -46,6 +44,8 @@ def start():
             if server_msg == DISCONNECT_MESSAGE:
                 print("[ASISTENTE] Gracias por contactarnos que tenga un buen día!")
                 break
+            else:
+                print(f"{server_msg}")
 
 
 start()

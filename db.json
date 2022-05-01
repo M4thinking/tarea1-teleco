@@ -1,7 +1,53 @@
 {
     "123": {
         "nombre": "Jorge",
-        "atenciones": {}
+        "atenciones": {
+            "55779662": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "26321515": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "88119656": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "67911172": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "2209566": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "44649681": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "65544997": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "3101382": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "96182598": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
     },
     "207246069": {
         "nombre": "Diego Sanz",
@@ -26,7 +72,76 @@
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
             },
-            "95447008": {
+            "88386736": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "33904890": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "206364165": {
+        "nombre": "Sebastian Guzman",
+        "atenciones": {
+            "11216238": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "192526543": {
+        "nombre": "Jaime",
+        "atenciones": {
+            "33160888": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "17975175": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "195256547": {
+        "nombre": "Juan",
+        "atenciones": {
+            "23270334": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "": {
+        "nombre": "20724606-9",
+        "atenciones": {
+            "48214260": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "193329500": {
+        "nombre": "Valerio Sans",
+        "atenciones": {}
+    },
+    "123456": {
+        "nombre": "Jorge Sandoval",
+        "atenciones": {
+            "61493011": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "44576652": {
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}

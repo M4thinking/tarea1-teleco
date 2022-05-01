@@ -3,7 +3,7 @@ from send_read import send
 
 HEADER = 64
 PORT = 6969
-HOST = "127.0.0.1"
+HOST = "192.168.56.1"
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -46,6 +46,8 @@ def start():
             if server_msg == DISCONNECT_MESSAGE:
                 print("[ASISTENTE] Gracias por contactarnos que tenga un buen día!")
                 break
+            else:
+                print(f"{server_msg}")
 
 
 start()
