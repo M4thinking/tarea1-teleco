@@ -23,7 +23,7 @@ db_ejecutivos = abrir_json(EJECUTIVOS_PATH)
 
 # Corre en paralelo para cada cliente
 def handle_client(conn, addr):
-    print(f"[NUEVA CONECCIÓN] {addr} connected.")
+    print(f"[NUEVA CONEXIÓN] {addr} connected.")
     rut = read(conn)  # Recibimos el rut
 
     # Si no está en la base de datos le pedimos el nombre
@@ -49,7 +49,7 @@ def handle_client(conn, addr):
 
 
 def handle_ejecutivo(conn, addr):
-    print(f"[NUEVA CONECCIÓN] Ejecutivo desde {addr} connected.")
+    print(f"[NUEVA CONEXIÓN] Ejecutivo desde {addr} connected.")
     rut = read(conn)  # Recibimos el rut del ejecutivo
 
     # Si no esta en nuestra base de datos terminamos proceso

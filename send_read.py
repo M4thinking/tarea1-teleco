@@ -1,12 +1,8 @@
-
 HEADER = 64
-PORT = 6969
-HOST = "127.0.0.1"
-ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
-DISCONNECT_MESSAGE = "!DISCONNECT"
 
 
+# Envia mensajes usando nuestro estandar de header (largo de mensaje) + mensaje
 def send(socket, msg):
     data = msg.encode(FORMAT)  # Codificamos siguiendo el mismo formato
     data_len = len(data)
