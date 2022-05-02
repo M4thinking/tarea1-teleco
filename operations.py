@@ -22,71 +22,96 @@ db_ejecutivos = abrir_json(EJECUTIVOS_PATH)
 
 
 # Comienza el diálogo entre cliente-servidor
-def start_operations(conn, name, rut, entrada_no_valida=0):
+def start_operations(conn, name, rut, print_options=0):
     options = f"""[ASISTENTE] Hola {name.split()[0]}, en qué te podemos ayudar?.\n
             \t(1) Revisar atenciones anteriores
             \t(2) Reiniciar servicios
             \t(3) Contactar a un ejecutivo
             \t(4) Salir"""
-    if entrada_no_valida == 0:
+
+    if print_options == 0:
         conn.send(options.encode(FORMAT))
     respuesta = read(conn)
 
     # Revisar historial de atenciones
     if respuesta == '1':
-        check_attentions(conn, rut)
+        attentions_status = ":[ASISTENTE] " + check_attentions(conn, rut)
+        conn.send(attentions_status.encode(FORMAT))
+        return start_operations(conn, name, rut, 0)
 
     # Reiniciar servicios
     elif respuesta == '2':
         msg = reset_service(conn, rut, name)
         print(f"[SERVER] {msg}")
         conn.send(f"[ASISTENTE] {msg}".encode(FORMAT))
-        start_operations(conn, name, rut, 1)
 
     # Contactar con ejecutivo
     elif respuesta == '3':
         if len(cola_ejecutivos) == 0:
             conn.send("[ASISTENTE] No hay ejecutivos disponibles en este momento.".encode(FORMAT))
-            start_operations(conn, name, rut, 1)
-            return
-        # Sacamos el siguiente ejecutivo de la cola
-        ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
-        # Llamamos a la conexión entre cliente-ejecutivo, indicando cuando comienza y termina en el server
-        print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
-        contact_operator(conn, name, conn_e, ejecutivo, rut_e)
-        conn.send(f"[ASISTENTE] Se terminó la conexión con {ejecutivo}".encode(FORMAT))
-
-        start_operations(conn, name, rut, 1)
+        else:
+            # Sacamos el siguiente ejecutivo de la cola
+            ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
+            # Llamamos a la conexión entre cliente-ejecutivo, indicando cuando comienza y termina en el server
+            print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
+            contact_operator(conn, name, conn_e, ejecutivo, rut_e)
+            conn.send(f"[ASISTENTE] Se terminó la conexión con {ejecutivo}".encode(FORMAT))
 
     # Terminamos conexión entre cliente-servidor
     elif respuesta == '4':
         print(server_exit(conn, name, "SERVER"))
         conn.send(server_exit(conn, name, "ASISTENTE").encode(FORMAT))
+        return
         # No hacemos recursión a start_operations, terminando el ciclo
 
     # Entrada no válida
     else:
         conn.send("Entrada no válida".encode(FORMAT))
-        start_operations(conn, name, rut, 1)
 
-    return
+    return start_operations(conn, name, rut, 1)
 
 
 # Consulta a la base de datos, enviando al cliente sus atenciones
 def check_attentions(conn, rut):
     db = abrir_json(DB_PATH)
     db_cliente = db[rut]["atenciones"]
+
+    if db_cliente == {}:
+        return "No hay atenciones anteriores."
+
     options = "Usted tiene las siguiente solicitudes en curso:\n\n"
 
     i = 1
+
     for id in db_cliente:
         descripcion = db_cliente[id]["descripcion"]
         options += f"\t({i}) Solicitud {id}: {descripcion}\n"
         i += 1
 
-    options += "\nElija cual quiere la solicitud."
+    options += "\nElija cual solicitud quiere revisar."
     conn.send(options.encode(FORMAT))
-    return 1
+    respuesta = read(conn)
+
+    try:
+        respuesta = int(respuesta)
+    except (RuntimeError, TypeError, NameError, ValueError):
+        return "Entrada inválida."
+
+    if 0 < int(respuesta) < i:
+        id_at_json = db[rut]["atenciones"].keys()
+        id_request = [*id_at_json][respuesta-1]
+        db_historial = db[rut]["atenciones"][id_request]["historial"]
+
+        if db_historial == {}:
+            return "No hay historial asociado a esta solicitud."
+
+        detalle = f"Historial de la solicitud {id_request}\n"
+        for fecha in db_historial:
+            detalle += f"\t Fecha {fecha}: {db_historial[fecha]}\n"
+
+        return f"{detalle}"
+    else:
+        return "Entrada inválida."
 
 
 def reset_service(conn, rut, name):
@@ -134,7 +159,7 @@ def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
 # Maneja el termino de la conexión entre cliente-servidor
 def server_exit(conn, name, sys):
     disconnect_command = ':' + DISCONNECT_MESSAGE
-    conn.send(disconnect_command.encode(FORMAT))    # Enviamos mensaje para desconectar cliente
+    conn.send(disconnect_command.encode(FORMAT))  # Enviamos mensaje para desconectar cliente
     return f"[{sys}] Cliente {name} desconectado."
 
 
@@ -150,7 +175,7 @@ def start_ejecutivo(conn, name, rut):
             connected = False
         time.sleep(1)
 
-    time.sleep(1)   # Esperamos a que se actualice la db de ejecutivos
+    time.sleep(1)  # Esperamos a que se actualice la db de ejecutivos
     # Dejamos al thread esperando hasta el fin de conexión con cliente
     while db_ejecutivos[rut]["disponible"] == 0:
         time.sleep(1)
@@ -162,7 +187,7 @@ def start_ejecutivo(conn, name, rut):
     if continuar[0].upper() == 'Y':  # Volvemos a llamar a start_ejecutivo
         start_ejecutivo(conn, name, rut)
 
-    else:   # Terminamos conexion
+    else:  # Terminamos conexion
         disconnect_command = ':' + DISCONNECT_MESSAGE
         send(conn, disconnect_command)
         return

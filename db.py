@@ -67,7 +67,7 @@ def crear_historial(db, id, fecha, contenido):
         return False
 
 
-# Creamos una funcion que reinicia los servicios
-def reiniciar_servicios(db):
-    db["atenciones"] = {}  # Actualizamos la llave que contiene las atenciones para que sea un dccionario vacio
-    return True  # Retornamos un boolenao que verifica que se realizó el proceso
+# # Creamos una funcion que reinicia los servicios (mal entendimiento del enunciado)
+# def reiniciar_servicios(db):
+#     db["atenciones"] = {}  # Actualizamos la llave que contiene las atenciones para que sea un diccionario vacío
+#     return True  # Retornamos un boolenao que verifica que se realizó el proceso

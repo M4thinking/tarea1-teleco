@@ -5,7 +5,11 @@
             "55779662": {
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
-                "historial": {}
+                "historial": {
+                    "02-05-2022 17:23": "detalle 1",
+                    "02-05-2022 17:27": "detalle 2",
+                    "02-05-2022 17:30": "detalle 3"
+                }
             },
             "26321515": {
                 "estado": true,
@@ -43,6 +47,11 @@
                 "historial": {}
             },
             "96182598": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "16334678": {
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}

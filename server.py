@@ -2,7 +2,7 @@ import socket
 import threading
 from db import *
 from send_read import send, read
-from operations import DB_PATH, EJECUTIVOS_PATH, cola_ejecutivos, msg_buffer
+from operations import DB_PATH, EJECUTIVOS_PATH
 import operations
 
 HEADER = 64
@@ -34,7 +34,7 @@ def handle_client(conn, addr):
         crear_cliente(db, rut, name)
         actualizar_json(DB_PATH, db)
 
-    # Si ya esta en la base de datos sacamos su nombre y lo mandamos al cliente para que lo salude
+    # Si ya está en la base de datos sacamos su nombre y lo mandamos al cliente para que lo salude
     else:
         conn.send("1".encode(FORMAT))  # Indicamos al cliente que tenemos su nombre
         name = db[rut]["nombre"]
@@ -79,7 +79,7 @@ def handle_ejecutivo(conn, addr):
     # Al terminar el loop lo dejamos como no disponible y cerramos la conexión
     print(f"[SERVER] Ejecutivo {name} desconectado.")
     db_ejecutivos[rut]["disponible"] = 0
-    db_ejecutivos[rut]["conectado"] = 1
+    db_ejecutivos[rut]["conectado"] = 0
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
     conn.close()
 
@@ -90,6 +90,7 @@ def start_server():
     for rut in db_ejecutivos:   # Ejecutivos comienzan desconectados y no disponibles
         db_ejecutivos[rut]["disponible"] = 0
         db_ejecutivos[rut]["conectado"] = 0
+    actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
 
     print(f"[ESCUCHANDO] Server está escuchando en {HOST}")
     server.listen()  # escuchamos a una nueva conexión
@@ -111,7 +112,7 @@ def start_server():
         else:
             print("Tipo de conexión desconocida")
 
-        print(f"[SERVER] Conecciones activas {threading.active_count() - 1}")
+        print(f"[SERVER] Conexiones activas {threading.active_count() - 1}")
 
 
 print("[STARTING] server is starting...")
