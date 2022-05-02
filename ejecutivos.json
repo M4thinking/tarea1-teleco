@@ -1,10 +1,12 @@
 {
     "206364165": {
         "nombre": "Sebastian Guzman",
-        "disponible": 0
+        "conectado": 1,
+        "disponible": 1
     },
     "207246069": {
         "nombre": "Diego Sanz",
+        "conectado": 0,
         "disponible": 0
     }
 }

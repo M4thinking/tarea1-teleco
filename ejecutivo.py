@@ -25,8 +25,12 @@ def start():
     is_ejecutivo = ejecutivo.recv(2048).decode(FORMAT)
 
     # Si no existe en el registro de ejecutivos terminamos el programa
-    if is_ejecutivo == '0':
+    if is_ejecutivo == '1':
         print("[ASISTENTE] No estás registrado como ejecutivo!")
+        return
+
+    if is_ejecutivo == '2':
+        print("[ASISTENTE] Ya hay una sesión abierta con tu rut!")
         return
 
     # Entramos a un loop infinito que recibe mensaje del servidor, lo mostramos en pantalla y le pedimos una

@@ -111,6 +111,11 @@
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
+            },
+            "73674678": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
             }
         }
     },
@@ -190,6 +195,31 @@
     },
     "123456789": {
         "nombre": "Luis",
+        "atenciones": {
+            "75007783": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "55870326": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "51077376": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "18196636": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            }
+        }
+    },
+    "243415993": {
+        "nombre": "Cesar",
         "atenciones": {}
     }
 }

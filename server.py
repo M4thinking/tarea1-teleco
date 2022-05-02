@@ -55,37 +55,50 @@ def handle_ejecutivo(conn, addr):
     # Si no esta en nuestra base de datos terminamos proceso
     if rut not in db_ejecutivos:
         print(f"[SERVER] {rut} no es ejecutivo.")
-        conn.send("0".encode(FORMAT))  # informamos a ejecutivo.py que no hay registro
+        conn.send("1".encode(FORMAT))  # informamos a ejecutivo.py que no hay registro
         conn.close()
         return
 
-    conn.send("1".encode(FORMAT))   # informamos a ejecutivo.py que si hay registro
+    if db_ejecutivos[rut]["conectado"] == 1:
+        print(f"[SERVER] {rut} ya está conectado.")
+        conn.send("2".encode(FORMAT))  # informamos a ejecutivo.py que no se puede conectar
+        conn.close()
+        return
+
+    conn.send("0".encode(FORMAT))   # informamos a ejecutivo.py que si hay registro
 
     # Si está en la base de datos sacamos su nombre, lo dejamos disponible y lo dejamos escuchando
     name = db_ejecutivos[rut]["nombre"]
     print(f"[SERVER] Ejecutivo {name} conectado.")
 
     db_ejecutivos[rut]["disponible"] = 1
+    db_ejecutivos[rut]["conectado"] = 1
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
     # En el db de ejecutivos dejamos disponible al ejecutivo y comenzamos su loop en operations
     operations.start_ejecutivo(conn, name, rut)
     # Al terminar el loop lo dejamos como no disponible y cerramos la conexión
     print(f"[SERVER] Ejecutivo {name} desconectado.")
     db_ejecutivos[rut]["disponible"] = 0
+    db_ejecutivos[rut]["conectado"] = 1
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
     conn.close()
 
 
 # Comienza el servidor, esperando conexiones y pasandoselas a handle_client en un cliente nuevo
 def start_server():
+    print("[SERVER] Configurando servidor...")
+    for rut in db_ejecutivos:   # Ejecutivos comienzan desconectados y no disponibles
+        db_ejecutivos[rut]["disponible"] = 0
+        db_ejecutivos[rut]["conectado"] = 0
+
     print(f"[ESCUCHANDO] Server está escuchando en {HOST}")
-    server.listen()  # escuchamos a una nueva conexion
+    server.listen()  # escuchamos a una nueva conexión
     while True:
-        conn, addr = server.accept()  # esperamos nueva conexion al server
-        # addr -> ip y puerto del que vino la conexion 
+        conn, addr = server.accept()  # esperamos nueva conexión al server
+        # addr -> ip y puerto del que vino la conexión
         # conn -> objeto que permite enviar info
 
-        # Creamos thread para la nueva conexion que corre la fn handle_client con los argumentos args
+        # Creamos thread para la nueva conexión que corre la fn handle_client con los argumentos args
         connection = read(conn) # Se recibe el tipo de conexión y se crea el thread correspondiente
         if connection == "cliente":
             thread = threading.Thread(target=handle_client, args=(conn, addr))

@@ -166,5 +166,3 @@ def start_ejecutivo(conn, name, rut):
         disconnect_command = ':' + DISCONNECT_MESSAGE
         send(conn, disconnect_command)
         return
-
-
