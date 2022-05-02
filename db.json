@@ -81,6 +81,36 @@
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
+            },
+            "70106607": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "13881185": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "80655582": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "91486073": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "37962878": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "79819700": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
             }
         }
     },
@@ -88,6 +118,11 @@
         "nombre": "Sebastian Guzman",
         "atenciones": {
             "11216238": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "26006866": {
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
@@ -147,5 +182,9 @@
                 "historial": {}
             }
         }
+    },
+    "123456789": {
+        "nombre": "Luis",
+        "atenciones": {}
     }
 }

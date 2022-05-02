@@ -11,10 +11,15 @@ FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 DB_PATH = "db.json"
 EJECUTIVOS_PATH = "ejecutivos.json"
+ayuda_comandos = """Estos son los comandos que puedes utilizar:\n
+\t :AYUDA - Muestra lista de comandos.
+\t :DESCONECTAR - Para terminar la conversación.
+"""
 
 cola_ejecutivos = []
 msg_buffer = ("ejecutivo", "")
 db_ejecutivos = abrir_json(EJECUTIVOS_PATH)
+
 
 def start_operations(conn, name, rut, entrada_no_valida=0):
     options = f"""[ASISTENTE] Hola {name.split()[0]}, en qué te podemos ayudar?.\n
@@ -44,7 +49,7 @@ def start_operations(conn, name, rut, entrada_no_valida=0):
             start_operations(conn, name, rut, 1)
             return
 
-        ejecutivo, rut_e, conn_e = cola_ejecutivos.pop()
+        ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
 
         print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
         #conn.send(f"[ASISTENTE] Cliente {name} redirigido a ejecutivo {ejecutivo}.".encode(FORMAT))
@@ -105,17 +110,13 @@ def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
         msg_ejecutivo = read(conn_e)
         if msg_ejecutivo[0] == ':':
             comando = msg_ejecutivo[1:]
-            if comando == "DESCONECTAR":
+            if comando.upper() == "DESCONECTAR":
                 connected = False
                 break
-
             elif comando.upper() == "AYUDA":
-                send(conn_e, """Estos son los comandos que puedes utilizar:\n
-                                \t :AYUDA - Muestra lista de comandos.\n
-                                \t :DESCONECTAR - Para terminar la conversación.\n
-                                """)
+                send(conn_e, ayuda_comandos)
             else:
-                send(conn_e, "Comando no reconocido :(")
+                send(conn_e, "Comando no reconocido, ingresa ':AYUDA' para ver la lista de comandos.")
             continue
         conn_c.send(f"[{ejecutivo.split()[0]}] {msg_ejecutivo}".encode(FORMAT))
 
@@ -157,7 +158,7 @@ def start_ejecutivo(conn, name, rut):
 
     else:
         disconnect_command = ':' + DISCONNECT_MESSAGE
-        conn.send(disconnect_command.encode(FORMAT))
+        send(conn, disconnect_command)
         return
 
 

@@ -7,9 +7,9 @@ import operations
 
 HEADER = 64
 PORT = 6969
-#HOST = "127.0.0.1"
+HOST = "127.0.0.1"
 # Consigue la ipv4 de la maquina donde se corre
-HOST = socket.gethostbyname(socket.gethostname())
+#HOST = socket.gethostbyname(socket.gethostname())
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"

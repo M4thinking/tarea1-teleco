@@ -3,7 +3,7 @@ from send_read import send
 
 HEADER = 64
 PORT = 6969
-HOST = "192.168.56.1"
+HOST = "127.0.0.1"
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -51,3 +51,4 @@ def start():
 
 
 start()
+input("Presiones cualquier tecla para terminar")
