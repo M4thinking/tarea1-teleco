@@ -21,6 +21,7 @@ msg_buffer = ("ejecutivo", "")
 db_ejecutivos = abrir_json(EJECUTIVOS_PATH)
 
 
+# Comienza el diálogo entre cliente-servidor
 def start_operations(conn, name, rut, entrada_no_valida=0):
     options = f"""[ASISTENTE] Hola {name.split()[0]}, en qué te podemos ayudar?.\n
             \t(1) Revisar atenciones anteriores
@@ -48,22 +49,20 @@ def start_operations(conn, name, rut, entrada_no_valida=0):
             conn.send("[ASISTENTE] No hay ejecutivos disponibles en este momento.".encode(FORMAT))
             start_operations(conn, name, rut, 1)
             return
-
+        # Sacamos el siguiente ejecutivo de la cola
         ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
-
+        # Llamamos a la conexión entre cliente-ejecutivo, indicando cuando comienza y termina en el server
         print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
-        #conn.send(f"[ASISTENTE] Cliente {name} redirigido a ejecutivo {ejecutivo}.".encode(FORMAT))
-
         contact_operator(conn, name, conn_e, ejecutivo, rut_e)
-
         conn.send(f"[ASISTENTE] Se terminó la conexión con {ejecutivo}".encode(FORMAT))
 
         start_operations(conn, name, rut, 1)
 
-    # Salir
+    # Terminamos conexión entre cliente-servidor
     elif respuesta == '4':
         print(server_exit(conn, name, "SERVER"))
         conn.send(server_exit(conn, name, "ASISTENTE").encode(FORMAT))
+        # No hacemos recursión a start_operations, terminando el ciclo
 
     # Entrada no válida
     else:
@@ -73,6 +72,7 @@ def start_operations(conn, name, rut, entrada_no_valida=0):
     return
 
 
+# Consulta a la base de datos, enviando al cliente sus atenciones
 def check_attentions(conn, rut):
     db = abrir_json(DB_PATH)
     db_cliente = db[rut]["atenciones"]
@@ -98,20 +98,22 @@ def reset_service(conn, rut, name):
     return f"Reinicio Servicios Cliente {name}."
 
 
+# Maneja toda la conexión entre cliente y ejecutivo
 def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
+    # Tomamos como ocupado al ejecutivo
     db_ejecutivos[rut_e]["disponible"] = 0
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
-    connected = True
 
     send(conn_e, f"Conectando con {cliente}...")
     conn_c.send(f":Conectando con {ejecutivo}...".encode(FORMAT))
 
-    while connected:
+    # Flujo de mensajes entre ejecutivo-cliente es como un ping-pong
+    while True:
         msg_ejecutivo = read(conn_e)
+        # En caso de que el ejecutivo envie un comando lo manejamos como un caso especial
         if msg_ejecutivo[0] == ':':
             comando = msg_ejecutivo[1:]
             if comando.upper() == "DESCONECTAR":
-                connected = False
                 break
             elif comando.upper() == "AYUDA":
                 send(conn_e, ayuda_comandos)
@@ -123,17 +125,20 @@ def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
         msg_cliente = read(conn_c)
         send(conn_e, f"[{cliente.split()[0]}] {msg_cliente}")
 
+    # Dejamos al ejecutivo disponible, para que el thread deje de esperar
     db_ejecutivos[rut_e]["disponible"] = 1
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
     return
 
 
+# Maneja el termino de la conexión entre cliente-servidor
 def server_exit(conn, name, sys):
     disconnect_command = ':' + DISCONNECT_MESSAGE
-    conn.send(disconnect_command.encode(FORMAT))
+    conn.send(disconnect_command.encode(FORMAT))    # Enviamos mensaje para desconectar cliente
     return f"[{sys}] Cliente {name} desconectado."
 
 
+# Lógica del ejecutivo
 def start_ejecutivo(conn, name, rut):
     cola_ejecutivos.append((name, rut, conn))
     connected = True
@@ -145,18 +150,19 @@ def start_ejecutivo(conn, name, rut):
             connected = False
         time.sleep(1)
 
-    time.sleep(1)
+    time.sleep(1)   # Esperamos a que se actualice la db de ejecutivos
+    # Dejamos al thread esperando hasta el fin de conexión con cliente
     while db_ejecutivos[rut]["disponible"] == 0:
         time.sleep(1)
 
-    send(conn, f"{name}, desea esperar a un nuevo cliente? (y/n)")
+    # Al terminar conexión preguntamos si quiere seguir en linea
+    send(conn, f"{name}, desea atender a un nuevo cliente? (y/n)")
     continuar = read(conn)
 
-    # Al terminar conexión preguntamos si quiere seguir en linea
     if continuar[0].upper() == 'Y':  # Volvemos a llamar a start_ejecutivo
         start_ejecutivo(conn, name, rut)
 
-    else:
+    else:   # Terminamos conexion
         disconnect_command = ':' + DISCONNECT_MESSAGE
         send(conn, disconnect_command)
         return

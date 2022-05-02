@@ -13,7 +13,7 @@ client.connect(ADDR)  # Nos conectamos al servidor!
 
 
 def start():
-    print(f"[NEW CONNECTION] Connected to {ADDR}")
+    print(f"[NUEVA CONEXIÓN] Connected to {ADDR}")
     send(client, "cliente")
     print("[ASISTENTE] Hola! Bienvenido, Ingrese su RUT (con punto y guión.)")
     rut = input("[YO]: ")

@@ -180,6 +180,11 @@
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
+            },
+            "34984646": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
             }
         }
     },

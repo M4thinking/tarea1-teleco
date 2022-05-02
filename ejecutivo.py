@@ -13,7 +13,7 @@ ejecutivo.connect(ADDR)  # Nos conectamos al servidor!
 
 
 def start():
-    print(f"[NEW CONNECTION] Connected to {ADDR}")
+    print(f"[NUEVA CONEXIÓN] Connected to {ADDR}")
     send(ejecutivo, "ejecutivo")
     print("[ASISTENTE] Hola! Bienvenido al portal de ejecutivos, Ingrese su RUT.")
     rut = input("[YO]: ")
@@ -30,7 +30,7 @@ def start():
         return
 
     # Entramos a un loop infinito que recibe mensaje del servidor, lo mostramos en pantalla y le pedimos una
-    # respuesta al cliente, enviandola al servidor
+    # respuesta al ejecutivo, enviandola al servidor
     while True:
         server_msg = read(ejecutivo)
 
