@@ -45,4 +45,4 @@ def interp(frase):
 	if probabilidad >= TRESH:
 		return tag
 	else:
-		return "6"
+		return "0"

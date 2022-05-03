@@ -4,6 +4,7 @@ from db import *
 from hashlib import *
 from send_read import *
 from datetime import datetime
+from nlp import interp
 
 HEADER = 64
 PORT = 6969
@@ -39,6 +40,9 @@ def start_operations(conn, name, rut, print_options=0):
     if print_options == 0:
         conn.send(options.encode(FORMAT))
     respuesta = read(conn)
+    if not respuesta.isnumeric():
+        respuesta = interp(respuesta)
+    
 
     # Revisar historial de atenciones
     if respuesta == '1':
