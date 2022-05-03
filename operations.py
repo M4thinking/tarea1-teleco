@@ -1,7 +1,9 @@
 import time
+import re
 from db import *
 from hashlib import *
 from send_read import *
+from datetime import datetime
 
 HEADER = 64
 PORT = 6969
@@ -12,8 +14,13 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 DB_PATH = "db.json"
 EJECUTIVOS_PATH = "ejecutivos.json"
 ayuda_comandos = """Estos son los comandos que puedes utilizar:\n
-\t :AYUDA - Muestra lista de comandos.
-\t :DESCONECTAR - Para terminar la conversación.
+\t :ayuda - Muestra lista de comandos.
+\t :desconectar - Para terminar la conversación.
+\t :subject <descripción solicitud> . Agrega/cambia el asunto relacionado con la solicitud. 
+\t :state [abierto|cerrado]. Cambia el estado de la solicitud.
+\t :history <nuevo historial>. Agrega nuevos antecedentes a la solicitud.
+\t :name <username>. Cambia el Nombre del Ejecutivo
+\t :restart. Reinicia todos sus servicios.
 """
 
 cola_ejecutivos = []
@@ -54,7 +61,7 @@ def start_operations(conn, name, rut, print_options=0):
             ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
             # Llamamos a la conexión entre cliente-ejecutivo, indicando cuando comienza y termina en el server
             print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
-            contact_operator(conn, name, conn_e, ejecutivo, rut_e)
+            contact_operator(conn, name, rut, conn_e, ejecutivo, rut_e)
             conn.send(f"[ASISTENTE] Se terminó la conexión con {ejecutivo}".encode(FORMAT))
 
     # Terminamos conexión entre cliente-servidor
@@ -99,7 +106,7 @@ def check_attentions(conn, rut):
 
     if 0 < int(respuesta) < i:
         id_at_json = db[rut]["atenciones"].keys()
-        id_request = [*id_at_json][respuesta-1]
+        id_request = [*id_at_json][respuesta - 1]
         db_historial = db[rut]["atenciones"][id_request]["historial"]
 
         if db_historial == {}:
@@ -124,13 +131,26 @@ def reset_service(conn, rut, name):
 
 
 # Maneja toda la conexión entre cliente y ejecutivo
-def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
+def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
     # Tomamos como ocupado al ejecutivo
     db_ejecutivos[rut_e]["disponible"] = 0
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
 
+    # Explicitamos la conexión
     send(conn_e, f"Conectando con {cliente}...")
     conn_c.send(f":Conectando con {ejecutivo}...".encode(FORMAT))
+
+    # Por defecto se crea una solicitud de "Consulta con Ejecutivo."
+    requestID = sha256()
+    inicio_solicitud = datetime.now().strftime("%Y-%m-%d %H:%M")
+    requestID.update(str(time.time()).encode("utf-8"))
+    id_solicitud = int(requestID.hexdigest()[:10], 16) % (10 ** 8)
+
+    # Conexión a la base de datos de los clientes e inserción de solicitud con historial
+    db = abrir_json(DB_PATH)
+    crear_atencion(db, rut, id_solicitud, "Comunicación con Ejecutivo.")
+    crear_historial(db, rut, id_solicitud, inicio_solicitud, f"Contacto con {ejecutivo}, Rut: {rut_e}.".encode(FORMAT))
+    actualizar_json(DB_PATH, db)
 
     # Flujo de mensajes entre ejecutivo-cliente es como un ping-pong
     while True:
@@ -138,12 +158,59 @@ def contact_operator(conn_c, cliente, conn_e, ejecutivo, rut_e):
         # En caso de que el ejecutivo envie un comando lo manejamos como un caso especial
         if msg_ejecutivo[0] == ':':
             comando = msg_ejecutivo[1:]
-            if comando.upper() == "DESCONECTAR":
+            if re.match('desconectar', comando):
                 break
-            elif comando.upper() == "AYUDA":
+            elif re.match('ayuda', comando):
                 send(conn_e, ayuda_comandos)
+
+            elif re.match('^subject ', comando):
+                subject = comando.replace("subject ", "", 1)  # Borra el comando la primera vez que aparece
+
+                if subject == "":
+                    send(conn_e, f'Ingresa una descricpión válida.')
+                    continue
+                db = abrir_json(DB_PATH)
+                modificar_descripcion(db, rut, id_solicitud, subject)
+                actualizar_json(DB_PATH, db)
+                send(conn_e, f'Cambio de descripción a "{subject}"')
+
+            elif re.match('^state ', comando):
+                state = comando.replace("state ", "", 1)  # Borra el comando la primera vez que aparece
+
+                if re.match('abierto', state):
+                    state = True
+                elif re.match('cerrado', state):
+                    state = False
+                else:
+                    send(conn_e, "Estado inválido, intentalo nuevamente.")
+                    continue
+                db = abrir_json(DB_PATH)
+                modificar_estado(db, rut, id_solicitud, state)
+                actualizar_json(DB_PATH, db)
+                send(conn_e, f'Cambio de estado de solicitud a "{state}" realizado con éxito.')
+
+            elif re.match('^history ', comando):
+                historial = comando.replace("history ", "", 1) # Borra el comando la primera vez que aparece
+                fecha_nuevo_historial = datetime.now().strftime("%Y-%m-%d %H:%M")
+                db = abrir_json(DB_PATH)
+                crear_historial(db, rut, id_solicitud, fecha_nuevo_historial, historial)
+                actualizar_json(DB_PATH, db)
+                send(conn_e, f'Nuevo detalle "{historial}" con fecha {fecha_nuevo_historial}.')
+
+            elif re.match('^name ', comando):
+                name = comando.replace("name ", "", 1)  # Borra el comando la primera vez que aparece
+                db_ejecutivos[rut_e]["nombre"] = name
+                actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
+                send(conn_e, f'¡Hola de nuevo {name}!')
+
+            elif re.match('restart', comando):
+                fecha_reinicio = datetime.now().strftime("%Y-%m-%d %H:%M")
+                db = abrir_json(DB_PATH)
+                crear_historial(db, rut, id_solicitud, fecha_reinicio, "Reinicia todos sus servicios")
+                actualizar_json(DB_PATH, db)
+                send(conn_e, f'Reinicio de todos los servicios con fecha {fecha_reinicio}.')
             else:
-                send(conn_e, "Comando no reconocido, ingresa ':AYUDA' para ver la lista de comandos.")
+                send(conn_e, "Comando no reconocido, ingresa ':ayuda' para ver la lista de comandos.")
             continue
         conn_c.send(f"[{ejecutivo.split()[0]}] {msg_ejecutivo}".encode(FORMAT))
 

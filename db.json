@@ -55,180 +55,30 @@
                 "estado": true,
                 "descripcion": "Reseteo de Servicios",
                 "historial": {}
-            }
-        }
-    },
-    "207246069": {
-        "nombre": "Diego Sanz",
-        "atenciones": {
-            "40463807": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
             },
-            "61496361": {
+            "61537402": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
+                "descripcion": "Consulta con Ejecutivo.",
+                "historial": {
+                    "2022-05-02 21:41": "Comunicaci\u00f3n con Sebastian Guzman, Rut: 206364165."
+                }
             },
-            "46688202": {
+            "66064724": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
+                "descripcion": "Consulta con Ejecutivo.",
+                "historial": {
+                    "2022-05-02 21:49": "Comunicación con Sebastian Guzman, Rut: 206364165."
+                }
             },
-            "84041051": {
+            "54449757": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
+                "descripcion": "Consulta con Ejecutivo.",
+                "historial": {
+                    "2022-05-02 21:58": "Comunicación con Diego Sanz, Rut: 207246069."
+                }
             },
-            "88386736": {
+            "8053810": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "33904890": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "70106607": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "13881185": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "80655582": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "91486073": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "37962878": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "79819700": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "73674678": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "206364165": {
-        "nombre": "Sebastian Guzman",
-        "atenciones": {
-            "11216238": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "26006866": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "192526543": {
-        "nombre": "Jaime",
-        "atenciones": {
-            "33160888": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "17975175": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "195256547": {
-        "nombre": "Juan",
-        "atenciones": {
-            "23270334": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "": {
-        "nombre": "20724606-9",
-        "atenciones": {
-            "48214260": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "193329500": {
-        "nombre": "Valerio Sans",
-        "atenciones": {}
-    },
-    "123456": {
-        "nombre": "Jorge Sandoval",
-        "atenciones": {
-            "61493011": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "44576652": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "34984646": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "123456789": {
-        "nombre": "Luis",
-        "atenciones": {
-            "75007783": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "55870326": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "51077376": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "18196636": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            }
-        }
-    },
-    "243415993": {
-        "nombre": "Cesar",
-        "atenciones": {}
-    }
-}
+                "descripcion": "Consulta con Ejecutivo.",
+                "historial": {
+                    "2022-05-02 22:08": 

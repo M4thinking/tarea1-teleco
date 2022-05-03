@@ -8,7 +8,7 @@ mutex = threading.Lock()  # Creamos un objeto mutex
 def abrir_json(nombre_archivo):
     global mutex  # Traemos el objeto mutex
     mutex.acquire()  # Pedimos permiso para que solo el hilo actual pueda realizar el proceso
-    f = open(nombre_archivo)  # Abrimos el archivo
+    f = open(nombre_archivo, encoding='utf-8')  # Abrimos el archivo
     data = json.load(f)  # Guardamos el .json en un diccionario
     f.close()  # Cerramos el archvo
     mutex.release()  # Soltamos el mutex de este hilo
@@ -19,8 +19,8 @@ def abrir_json(nombre_archivo):
 def actualizar_json(nombre_archivo, data):
     global mutex  # Traemos el objeto mutex
     mutex.acquire()  # Pedimos permiso para que solo el hilo actual pueda realizar el proceso
-    f = open(nombre_archivo, "w")  # Abrimos el archivo
-    json.dump(data, f, indent=4)  # Reescribimos el .json
+    f = open(nombre_archivo, "w", encoding='utf-8')  # Abrimos el archivo
+    json.dump(data, f, indent=4, ensure_ascii=False)  # Reescribimos el .json
     f.close()  # Cerramos el archvo
     mutex.release()  # Soltamos el mutex de este hilo
     return True  # Retornamos un booleano que verifica que se completo el proceso
@@ -56,16 +56,22 @@ def crear_atencion(db, rut, id, descripcion):
         return False
 
 
-# Creamos un historial
-def crear_historial(db, id, fecha, contenido):
-    # Revisamos si ya hay un historial con esa fecha
-    if not fecha in db["atenciones"][id]["historial"]:
-        # Insertamos un elemento en el diccionario de historiales
-        db["atenciones"][id]["historial"][fecha] = contenido
-        return True  # Retornamos un boolenao que verifica que se realizó el proceso
-    else:
-        return False
+# Modificamos la descripción de la atención
+def modificar_descripcion(db, rut, id, descripcion):
+    db[rut]["atenciones"][id]["descripcion"] = descripcion  # actualizamos el diccionario con la nueva descripcion
+    return
 
+
+# Modificamos el estado de la atención
+def modificar_estado(db, rut, id, estado):
+    db[rut]["atenciones"][id]["estado"] = estado  # actualizamos el diccionario con la nueva descripcion
+    return
+
+
+# Creamos un historial
+def crear_historial(db, rut, id, fecha, contenido):
+    # Insertamos un elemento en el diccionario de historiales
+    db[rut]["atenciones"][id]["historial"][fecha] = contenido
 
 # # Creamos una funcion que reinicia los servicios (mal entendimiento del enunciado)
 # def reiniciar_servicios(db):
