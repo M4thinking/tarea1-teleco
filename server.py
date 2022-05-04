@@ -4,11 +4,12 @@ from db import *
 from send_read import send, read
 from operations import DB_PATH, EJECUTIVOS_PATH
 import operations
+import sys
 
 HEADER = 64
 PORT = 6969
 HOST = "127.0.0.1"
-# Consigue la ipv4 de la maquina donde se corre
+# Consigue la ipv4 de la maquina donde se corre (para correrlo a traves de una red local)
 # HOST = socket.gethostbyname(socket.gethostname())
 ADDR = (HOST, PORT)
 FORMAT = 'utf-8'
@@ -28,7 +29,7 @@ def handle_client(conn, addr):
 
     # Si no está en la base de datos le pedimos el nombre
     if rut not in db:
-        conn.send("0".encode(FORMAT))  # Indicamos que no tiene nombre y lo recibimos
+        send(conn, "0")  # Indicamos que no tiene nombre y lo recibimos
         name = read(conn)
 
         crear_cliente(db, rut, name)
@@ -36,7 +37,7 @@ def handle_client(conn, addr):
 
     # Si ya está en la base de datos sacamos su nombre y lo mandamos al cliente para que lo salude
     else:
-        conn.send("1".encode(FORMAT))  # Indicamos al cliente que tenemos su nombre
+        send(conn, "1")  # Indicamos al cliente que tenemos su nombre
         name = db[rut]["nombre"]
 
     print(f"[SERVER] Cliente {name} conectado.")
@@ -55,17 +56,17 @@ def handle_ejecutivo(conn, addr):
     # Si no esta en nuestra base de datos terminamos proceso
     if rut not in db_ejecutivos:
         print(f"[SERVER] {rut} no es ejecutivo.")
-        conn.send("1".encode(FORMAT))  # informamos a ejecutivo.py que no hay registro
+        send(conn, "1")  # informamos a ejecutivo.py que no hay registro
         conn.close()
         return
 
     if db_ejecutivos[rut]["conectado"] == 1:
         print(f"[SERVER] {rut} ya está conectado.")
-        conn.send("2".encode(FORMAT))  # informamos a ejecutivo.py que no se puede conectar
+        send(conn, "2")  # informamos a ejecutivo.py que no se puede conectar
         conn.close()
         return
 
-    conn.send("0".encode(FORMAT))   # informamos a ejecutivo.py que si hay registro
+    send(conn, "0")  # informamos a ejecutivo.py que si hay registro
 
     # Si está en la base de datos sacamos su nombre, lo dejamos disponible y lo dejamos escuchando
     name = db_ejecutivos[rut]["nombre"]
@@ -87,7 +88,7 @@ def handle_ejecutivo(conn, addr):
 # Comienza el servidor, esperando conexiones y pasandoselas a handle_client en un cliente nuevo
 def start_server():
     print("[SERVER] Configurando servidor...")
-    for rut in db_ejecutivos:   # Ejecutivos comienzan desconectados y no disponibles
+    for rut in db_ejecutivos:  # Ejecutivos comienzan desconectados y no disponibles
         db_ejecutivos[rut]["disponible"] = 0
         db_ejecutivos[rut]["conectado"] = 0
     actualizar_json(EJECUTIVOS_PATH, db_ejecutivos)
@@ -95,25 +96,33 @@ def start_server():
     print(f"[ESCUCHANDO] Server está escuchando en {HOST}")
     server.listen()  # escuchamos a una nueva conexión
     while True:
-        conn, addr = server.accept()  # esperamos nueva conexión al server
-        # addr -> ip y puerto del que vino la conexión
-        # conn -> objeto que permite enviar info
+        try:
+            conn, addr = server.accept()  # esperamos nueva conexión al server
+            # addr -> ip y puerto del que vino la conexión
+            # conn -> objeto que permite enviar info
 
-        # Creamos thread para la nueva conexión que corre la fn handle_client con los argumentos args
-        connection = read(conn) # Se recibe el tipo de conexión y se crea el thread correspondiente
-        if connection == "cliente":
-            thread = threading.Thread(target=handle_client, args=(conn, addr))
-            thread.start()
+            # Creamos thread para la nueva conexión que corre la fn handle_client con los argumentos args
+            connection = read(conn)  # Se recibe el tipo de conexión y se crea el thread correspondiente
+            if connection == "cliente":
+                thread = threading.Thread(target=handle_client, args=(conn, addr))
+                thread.start()
 
-        elif connection == "ejecutivo":
-            thread = threading.Thread(target=handle_ejecutivo, args=(conn, addr))
-            thread.start()
+            elif connection == "ejecutivo":
+                thread = threading.Thread(target=handle_ejecutivo, args=(conn, addr))
+                thread.start()
 
-        else:
-            print("Tipo de conexión desconocida")
+            else:
+                print("Tipo de conexión desconocida")
 
-        print(f"[SERVER] Conexiones activas {threading.active_count() - 1}")
+            print(f"[SERVER] Conexiones activas {threading.active_count() - 1}")
+
+        except KeyboardInterrupt:
+            server.shutdown(socket.SHUT_RDWR)
+            server.close()
+            print(f"[SERVER] Server fue interrumpido...")
+            sys.exit()
 
 
-print("[STARTING] server is starting...")
+
+print("[STARTING] Server está comenzando...")
 start_server()

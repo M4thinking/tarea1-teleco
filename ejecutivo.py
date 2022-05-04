@@ -22,7 +22,7 @@ def start():
 
     send(ejecutivo, parse_rut)
     # Recibimos de vuelta si el rut existe en la base de datos
-    is_ejecutivo = ejecutivo.recv(2048).decode(FORMAT)
+    is_ejecutivo = read(ejecutivo)
 
     # Si no existe en el registro de ejecutivos terminamos el programa
     if is_ejecutivo == '1':

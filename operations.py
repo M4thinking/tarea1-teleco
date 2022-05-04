@@ -6,17 +6,15 @@ from send_read import *
 from datetime import datetime
 from nlp import interp
 
-HEADER = 64
-PORT = 6969
-HOST = "127.0.0.1"
-ADDR = (HOST, PORT)
+
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 DB_PATH = "db.json"
 EJECUTIVOS_PATH = "ejecutivos.json"
+
 ayuda_comandos = """Estos son los comandos que puedes utilizar:\n
-\t :ayuda - Muestra lista de comandos.
-\t :desconectar - Para terminar la conversación.
+\t :ayuda . Muestra lista de comandos.
+\t :desconectar . Para terminar la conversación.
 \t :subject <descripción solicitud> . Agrega/cambia el asunto relacionado con la solicitud. 
 \t :state [abierto|cerrado]. Cambia el estado de la solicitud.
 \t :history <nuevo historial>. Agrega nuevos antecedentes a la solicitud.
@@ -38,7 +36,7 @@ def start_operations(conn, name, rut, print_options=0):
             \t(4) Salir"""
 
     if print_options == 0:
-        conn.send(options.encode(FORMAT))
+        send(conn, options)
     respuesta = read(conn)
     if not respuesta.isnumeric():
         respuesta = interp(respuesta)
@@ -47,37 +45,37 @@ def start_operations(conn, name, rut, print_options=0):
     # Revisar historial de atenciones
     if respuesta == '1':
         attentions_status = ":[ASISTENTE] " + check_attentions(conn, rut)
-        conn.send(attentions_status.encode(FORMAT))
+        send(conn, attentions_status)
         return start_operations(conn, name, rut, 0)
 
     # Reiniciar servicios
     elif respuesta == '2':
         msg = reset_service(conn, rut, name)
         print(f"[SERVER] {msg}")
-        conn.send(f"[ASISTENTE] {msg}".encode(FORMAT))
+        send(conn, f"[ASISTENTE] {msg}")
 
     # Contactar con ejecutivo
     elif respuesta == '3':
         if len(cola_ejecutivos) == 0:
-            conn.send("[ASISTENTE] No hay ejecutivos disponibles en este momento.".encode(FORMAT))
+            send(conn, "[ASISTENTE] No hay ejecutivos disponibles en este momento.")
         else:
             # Sacamos el siguiente ejecutivo de la cola
             ejecutivo, rut_e, conn_e = cola_ejecutivos.pop(0)
             # Llamamos a la conexión entre cliente-ejecutivo, indicando cuando comienza y termina en el server
             print(f"[SERVER] Cliente {name} redirigido a ejecutivo {ejecutivo}.")
             contact_operator(conn, name, rut, conn_e, ejecutivo, rut_e)
-            conn.send(f"[ASISTENTE] Se terminó la conexión con {ejecutivo}".encode(FORMAT))
+            send(conn, f"[ASISTENTE] Se terminó la conexión con {ejecutivo}")
 
     # Terminamos conexión entre cliente-servidor
     elif respuesta == '4':
         print(server_exit(conn, name, "SERVER"))
-        conn.send(server_exit(conn, name, "ASISTENTE").encode(FORMAT))
+        send(conn, server_exit(conn, name, "ASISTENTE"))
         return
         # No hacemos recursión a start_operations, terminando el ciclo
 
     # Entrada no válida
     else:
-        conn.send("Entrada no válida".encode(FORMAT))
+        send(conn, "Entrada no válida")
 
     return start_operations(conn, name, rut, 1)
 
@@ -100,7 +98,7 @@ def check_attentions(conn, rut):
         i += 1
 
     options += "\nElija cual solicitud quiere revisar."
-    conn.send(options.encode(FORMAT))
+    send(conn, options)
     respuesta = read(conn)
 
     try:
@@ -142,7 +140,7 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
 
     # Explicitamos la conexión
     send(conn_e, f"Conectando con {cliente}...")
-    conn_c.send(f":Conectando con {ejecutivo}...".encode(FORMAT))
+    send(conn_c, f":Conectando con {ejecutivo}...")
 
     # Por defecto se crea una solicitud de "Consulta con Ejecutivo."
     requestID = sha256()
@@ -217,7 +215,7 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
             else:
                 send(conn_e, "Comando no reconocido, ingresa ':ayuda' para ver la lista de comandos.")
             continue
-        conn_c.send(f"[{ejecutivo.split()[0]}] {msg_ejecutivo}".encode(FORMAT))
+        send(conn_c, f"[{ejecutivo.split()[0]}] {msg_ejecutivo}")
 
         msg_cliente = read(conn_c)
         send(conn_e, f"[{cliente.split()[0]}] {msg_cliente}")
@@ -231,7 +229,7 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
 # Maneja el termino de la conexión entre cliente-servidor
 def server_exit(conn, name, sys):
     disconnect_command = ':' + DISCONNECT_MESSAGE
-    conn.send(disconnect_command.encode(FORMAT))  # Enviamos mensaje para desconectar cliente
+    send(conn, disconnect_command)  # Enviamos mensaje para desconectar cliente
     return f"[{sys}] Cliente {name} desconectado."
 
 
