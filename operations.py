@@ -147,13 +147,14 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
     # Por defecto se crea una solicitud de "Consulta con Ejecutivo."
     requestID = sha256()
     inicio_solicitud = datetime.now().strftime("%Y-%m-%d %H:%M")
-    requestID.update(str(time.time()).encode("utf-8"))
+    requestID.update(str(time.time()).encode(FORMAT))
     id_solicitud = int(requestID.hexdigest()[:10], 16) % (10 ** 8)
+    id_solicitud = str(id_solicitud)
 
     # Conexión a la base de datos de los clientes e inserción de solicitud con historial
     db = abrir_json(DB_PATH)
     crear_atencion(db, rut, id_solicitud, "Comunicación con Ejecutivo.")
-    crear_historial(db, rut, id_solicitud, inicio_solicitud, f"Contacto con {ejecutivo}, Rut: {rut_e}.".encode(FORMAT))
+    crear_historial(db, rut, id_solicitud, inicio_solicitud, f"Contacto con {ejecutivo}, Rut: {rut_e}.")
     actualizar_json(DB_PATH, db)
 
     # Flujo de mensajes entre ejecutivo-cliente es como un ping-pong

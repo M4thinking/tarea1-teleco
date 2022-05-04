@@ -1,84 +1,44 @@
 {
     "123": {
-        "nombre": "Jorge",
+        "nombre": "sebi",
         "atenciones": {
-            "55779662": {
+            "91970093": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
+                "descripcion": "Comunicación con Ejecutivo.",
                 "historial": {
-                    "02-05-2022 17:23": "detalle 1",
-                    "02-05-2022 17:27": "detalle 2",
-                    "02-05-2022 17:30": "detalle 3"
+                    "2022-05-04 16:42": "Contacto con Sebastian Guzman, Rut: 206364165."
                 }
             },
-            "26321515": {
+            "32662389": {
                 "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "88119656": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "67911172": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "2209566": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "44649681": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "65544997": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "3101382": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "96182598": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "16334678": {
-                "estado": true,
-                "descripcion": "Reseteo de Servicios",
-                "historial": {}
-            },
-            "61537402": {
-                "estado": true,
-                "descripcion": "Consulta con Ejecutivo.",
+                "descripcion": "esto es otro cambio",
                 "historial": {
-                    "2022-05-02 21:41": "Comunicaci\u00f3n con Sebastian Guzman, Rut: 206364165."
+                    "2022-05-04 16:42": "Contacto con Sebastian Guzman, Rut: 206364165.",
+                    "2022-05-04 16:46": "nuevo historial",
+                    "2022-05-04 16:47": "Reinicia todos sus servicios"
                 }
             },
-            "66064724": {
+            "40705375": {
                 "estado": true,
-                "descripcion": "Consulta con Ejecutivo.",
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "65717101": {
+                "estado": true,
+                "descripcion": "Comunicación con Ejecutivo.",
                 "historial": {
-                    "2022-05-02 21:49": "Comunicación con Sebastian Guzman, Rut: 206364165."
+                    "2022-05-04 16:49": "Contacto con Sebastian Guzman, Rut: 206364165.",
+                    "2022-05-04 16:50": "Reinicia todos sus servicios"
                 }
             },
-            "54449757": {
+            "17498476": {
                 "estado": true,
-                "descripcion": "Consulta con Ejecutivo.",
+                "descripcion": "Comunicación con Ejecutivo.",
                 "historial": {
-                    "2022-05-02 21:58": "Comunicación con Diego Sanz, Rut: 207246069."
+                    "2022-05-04 16:52": "Contacto con Jorge Guzman, Rut: 206364165.",
+                    "2022-05-04 16:53": "el wn no me responde"
                 }
-            },
-            "8053810": {
-                "estado": true,
-                "descripcion": "Consulta con Ejecutivo.",
-                "historial": {
-                    "2022-05-02 22:08": 
+            }
+        }
+    }
+}

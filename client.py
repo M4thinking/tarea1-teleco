@@ -1,4 +1,6 @@
 import socket
+import time
+
 from send_read import send
 
 HEADER = 64

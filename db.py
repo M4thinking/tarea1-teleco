@@ -72,6 +72,7 @@ def modificar_estado(db, rut, id, estado):
 def crear_historial(db, rut, id, fecha, contenido):
     # Insertamos un elemento en el diccionario de historiales
     db[rut]["atenciones"][id]["historial"][fecha] = contenido
+    return
 
 # # Creamos una funcion que reinicia los servicios (mal entendimiento del enunciado)
 # def reiniciar_servicios(db):
