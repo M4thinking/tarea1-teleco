@@ -1,6 +1,44 @@
 {
-	1234: {
-		"nombre":"Sebita"
-	}
-	
+    "123": {
+        "nombre": "sebi",
+        "atenciones": {
+            "91970093": {
+                "estado": true,
+                "descripcion": "Comunicación con Ejecutivo.",
+                "historial": {
+                    "2022-05-04 16:42": "Contacto con Sebastian Guzman, Rut: 206364165."
+                }
+            },
+            "32662389": {
+                "estado": true,
+                "descripcion": "esto es otro cambio",
+                "historial": {
+                    "2022-05-04 16:42": "Contacto con Sebastian Guzman, Rut: 206364165.",
+                    "2022-05-04 16:46": "nuevo historial",
+                    "2022-05-04 16:47": "Reinicia todos sus servicios"
+                }
+            },
+            "40705375": {
+                "estado": true,
+                "descripcion": "Reseteo de Servicios",
+                "historial": {}
+            },
+            "65717101": {
+                "estado": true,
+                "descripcion": "Comunicación con Ejecutivo.",
+                "historial": {
+                    "2022-05-04 16:49": "Contacto con Sebastian Guzman, Rut: 206364165.",
+                    "2022-05-04 16:50": "Reinicia todos sus servicios"
+                }
+            },
+            "17498476": {
+                "estado": true,
+                "descripcion": "Comunicación con Ejecutivo.",
+                "historial": {
+                    "2022-05-04 16:52": "Contacto con Jorge Guzman, Rut: 206364165.",
+                    "2022-05-04 16:53": "el wn no me responde"
+                }
+            }
+        }
+    }
 }

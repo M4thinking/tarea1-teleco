@@ -1,0 +1,89 @@
+{
+  "intents":[
+
+    
+    {
+      "tag":"1",
+      "patterns":[
+        "Quiero ver mis atenciones anteriores",
+        "Hola, quiero ver mis atenciones anteriores",
+        "Atenciones",
+        "Atender",
+        "Me gustaria revisar lo que he hecho",
+        "Quiero ver mi historial",
+        "hola, Quiero ver mi historial"
+      ],
+      "responses":[]
+    },
+
+
+    {
+      "tag":"2",
+      "patterns":[
+        "Quiero revisar mis servicios",
+        "Hola, Quiero revisar mis servicios",
+        "Quiero hacer un reinicio",
+        "Hola, Quiero hacer un reinicio",
+        "reinicio",
+        "hay un problema con los sevicios"
+      ],
+      "responses":[]
+    },
+
+
+    {
+      "tag":"3",
+      "patterns":[
+        "Quiero hablar con un ejecutivo",
+        "Hola, Quiero hablar con un ejecutivo",
+        "Dame a un humano",
+        "ejecutivo",
+        "contactar",
+        "Hola, Dame a un humano",
+        "Necesito una persona real",
+        "Denme un asistente",
+        "Denme una persona"
+      ],
+      "responses":[]
+    },    
+  
+    {
+      "tag":"5",
+      "patterns":[
+        "Hola", 
+        "Cómo estás",
+        "Qué tal?",
+        "Buen día", 
+        "Saludos"
+      ],
+      "responses":[]
+    },
+
+    {
+      "tag":"4",
+      "patterns":[
+        "Quiero salir",
+        "Salida",
+        "Quiero salir",
+        "Eso fue todo",
+        "Adios",
+        "No necesito nada más",
+        "Chao"
+      ],
+      "responses":[]
+    },
+
+    {
+      "tag":"6",
+      "patterns":[
+        "Me da un completo",
+        "Suanto cuest aun plan?",
+        "asdhf dhsfkjjnds",
+        "no se qué hago",
+        "aaaa",
+        "Sí o no"
+      ],
+      "responses":[]
+    }
+  ]
+}
