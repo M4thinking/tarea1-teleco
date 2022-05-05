@@ -54,3 +54,4 @@ def start():
 
 start()
 input("Presiones cualquier tecla para terminar")
+ejecutivo.close()

@@ -139,7 +139,6 @@ def check_attentions(conn, rut):
         return "Entrada inválida."
 
 
-# Maneja toda la conexión entre cliente y ejecutivo, junto a los ":comandos"
 def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
     # Tomamos como ocupado al ejecutivo
     db_ejecutivos[rut_e]["disponible"] = 0
@@ -170,9 +169,13 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
             comando = msg_ejecutivo[1:]
             if re.match('desconectar', comando):
                 break
+
+            # Verifica expresión regular exacta y envía del detalle de comandos
             elif re.match('ayuda', comando):
                 send(conn_e, ayuda_comandos)
 
+            # Verífica expresión regular al comienzo del comando
+            # El resto lo utiliza como descripción de la solicitud en curso
             elif re.match('^subject ', comando):
                 subject = comando.replace("subject ", "", 1)  # Borra el comando la primera vez que aparece
 
@@ -184,9 +187,12 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
                 actualizar_json(DB_PATH, db)
                 send(conn_e, f'Cambio de descripción a "{subject}"')
 
+            # Verifica expresión regular al comienzo del comando
+            # Si hace match, establece el estado que se indica a continuación
             elif re.match('^state ', comando):
                 state = comando.replace("state ", "", 1)  # Borra el comando la primera vez que aparece
 
+                # Verifica un estado válido
                 if re.match('abierto', state):
                     state = True
                 elif re.match('cerrado', state):
@@ -194,11 +200,16 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
                 else:
                     send(conn_e, "Estado inválido, intentalo nuevamente.")
                     continue
+
+                # Si sale bien, modifica la base de datos
                 db = abrir_json(DB_PATH)
                 modificar_estado(db, rut, id_solicitud, state)
                 actualizar_json(DB_PATH, db)
                 send(conn_e, f'Cambio de estado de solicitud a "{state}" realizado con éxito.')
 
+            # Verifica expresión regular al comienzo del comando
+            # Si hace match, crea una fecha nueva para el historial
+            # agregado a continuación del comando en la solicitud actual
             elif re.match('^history ', comando):
                 historial = comando.replace("history ", "", 1)  # Borra el comando la primera vez que aparece
                 fecha_nuevo_historial = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -207,6 +218,9 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
                 actualizar_json(DB_PATH, db)
                 send(conn_e, f'Nuevo detalle "{historial}" con fecha {fecha_nuevo_historial}.')
 
+            # Verifica expresión regular al comienzo
+            # Si hace match actualiza el nombre del ejecutivo
+            # (este cambio lo verá el próximo cliente que atienda).
             elif re.match('^name ', comando):
                 name = comando.replace("name ", "", 1)  # Borra el comando la primera vez que aparece
                 db_ejecutivos[rut_e]["nombre"] = name
@@ -222,8 +236,9 @@ def contact_operator(conn_c, cliente, rut, conn_e, ejecutivo, rut_e):
             else:
                 send(conn_e, "Comando no reconocido, ingresa ':ayuda' para ver la lista de comandos.")
             continue
-        send(conn_c, f"[{ejecutivo.split()[0]}] {msg_ejecutivo}")
 
+        # Ping-Pong de mensajes asociados a los nombres del cliente y el ejecutivo
+        send(conn_c, f"[{ejecutivo.split()[0]}] {msg_ejecutivo}")
         msg_cliente = read(conn_c)
         send(conn_e, f"[{cliente.split()[0]}] {msg_cliente}")
 
