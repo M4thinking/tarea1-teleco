@@ -9,7 +9,7 @@ FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)  # Nos conectamos al servidor!
+client.connect(ADDR)  # ¡Nos conectamos al servidor!
 
 
 def start():
@@ -21,7 +21,7 @@ def start():
     parse_rut = ''.join(char for char in rut if (char.isdigit() or char.upper() == 'K'))
 
     send(client, parse_rut)
-    # Recibimos de vuelta si el rut existe en la base de datos
+    # Recibimos de vuelta si el RUT existe en la base de datos
     has_name = read(client)
 
     # Si no existe le pedimos el nombre y lo mandamos de vuelta
@@ -32,7 +32,7 @@ def start():
         send(client, name)
 
     # Entramos a un loop infinito que recibe mensaje del servidor, lo mostramos en pantalla y le pedimos una
-    # respuesta al cliente, enviandola al servidor
+    # respuesta al cliente, enviándola al servidor
     while True:
         server_msg = read(client)
 

@@ -34,7 +34,7 @@ def start():
         return
 
     # Entramos a un loop infinito que recibe mensaje del servidor, lo mostramos en pantalla y le pedimos una
-    # respuesta al ejecutivo, enviandola al servidor
+    # respuesta al ejecutivo, enviándola al servidor
     while True:
         server_msg = read(ejecutivo)
 
